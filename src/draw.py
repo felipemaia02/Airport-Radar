@@ -1,6 +1,7 @@
 from screen import Screen
 from stack import Stack
 from graphics import *
+import math
 
 
 '''
@@ -23,36 +24,37 @@ class Draw:
 
     # A função que deve ser usada para desenhar pontos é a função point
     def square_point(self,x, y, color):
-        self.display.plot(x, y, color)
-        self.display.plot(x + 1, y, color)
-        self.display.plot(x, y + 1, color)
-        self.display.plot(x + 1, y + 1, color)
+        self.pixel_point(x,y,color)
+        self.pixel_point(x + 1, y, color)
+        self.pixel_point(x, y + 1, color)
+        self.pixel_point(x + 1, y + 1, color)
+        
 
     # A função que deve ser usada para desenhar pontos é a função point
     def cross_point(self, x, y, color):
-        self.display.plot(x, y , color)
-        self.display.plot(x + 1, y, color)
-        self.display.plot(x - 1, y, color)
-        self.display.plot(x, y + 1, color)
-        self.display.plot(x, y - 1, color)
+        self.pixel_point(x, y , color)
+        self.pixel_point(x + 1, y, color)
+        self.pixel_point(x - 1, y, color)
+        self.pixel_point(x, y + 1, color)
+        self.pixel_point(x, y - 1, color)
 
     # A função que deve ser usada para desenhar pontos é a função point
     def maximum_point(self, x, y , color):
-        self.display.plot(x, y, color)
-        self.display.plot(x + 1, y, color)
+        self.pixel_point(x, y, color)
+        self.pixel_point(x + 1, y, color)
 
-        self.display.plot(x - 1, y + 1, color)
-        self.display.plot(x, y + 1, color)
-        self.display.plot(x + 1, y + 1, color)
-        self.display.plot(x + 2, y + 1, color)
+        self.pixel_point(x - 1, y + 1, color)
+        self.pixel_point(x, y + 1, color)
+        self.pixel_point(x + 1, y + 1, color)
+        self.pixel_point(x + 2, y + 1, color)
 
-        self.display.plot(x - 1, y + 2, color)
-        self.display.plot(x, y + 2, color)
-        self.display.plot(x + 1, y + 2, color)
-        self.display.plot(x + 2, y + 2, color)
+        self.pixel_point(x - 1, y + 2, color)
+        self.pixel_point(x, y + 2, color)
+        self.pixel_point(x + 1, y + 2, color)
+        self.pixel_point(x + 2, y + 2, color)
 
-        self.display.plot(x, y + 4, color)
-        self.display.plot( x + 1, y + 4, color)
+        self.pixel_point(x, y + 4, color)
+        self.pixel_point( x + 1, y + 4, color)
 
     #Função que gera o pontos
     def point(self, x, y, color, size):
@@ -214,22 +216,36 @@ class Draw:
 
             self.circle_points(xc, yc, x, y, color)
 
-    def text(self, x, y, word, cor, size, style):
+    def text(self, x, y, word, color, size, style):
         t = Text(Point(x,y), word)
-        t.setOutline(cor)
+        t.setOutline(color)
         t.setSize(size)
         t.setStyle(style)
         t.draw(self.display)
 
+        delta_x = int(len(word)*size/2)
+        delta_y = int(size/2)
 
-    def fill(self, x, y, color, bg_color='black'):
-        area = stack.Stack()
+        for _x in range(x - delta_x, x + delta_x + 1):
+            for _y in range(y - delta_y, y + delta_y + 1):
+                self.screen.pixels[_x][_y].color = color
+
+
+    def fill(self, x, y, color):
+        '''
+
+        :param x: Coordenada X de um ponto que deve estar dentro da área fechada a ser preenchida.
+        :param y: Coordenada Y de um ponto que deve estar dentro da area fechada a ser preenchida.
+        :param color: Cor que preencherá a área e deve ser a mesma cor que limita a área.
+        :return: Preenche uma área com a mesma cor que a limita.
+        '''
+        area = Stack()
         area.push(self.screen.pixels[x][y])
 
         while not area.isEmpty():
             pixel = area.pop()
 
-            if pixel.color == bg_color:
+            if pixel.color != color:
                 self.point(pixel.x, pixel.y, color, 1)
 
                 area.push(self.screen.pixels[pixel.x + 1][pixel.y])
@@ -240,7 +256,8 @@ class Draw:
 
                 area.push(self.screen.pixels[pixel.x][pixel.y - 1])
 
-    def project_plane(self, x, y, z,f, F, x1, y1):
+
+    def project_airplane(self, x, y, z,f, F, x1, y1):
         x1 = int(x * f/(F-z))
         y1 = int(y * f/(F-z))
 
