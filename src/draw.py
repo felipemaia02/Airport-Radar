@@ -10,7 +10,7 @@ import math
           FELIPE OLIVEIRA MAIA          RA: 21801679
           RAFAEL ABREU FONSECA          RA: 21700439
 '''
-
+#Classe da biblioteca grafíca
 class Draw:
     def __init__(self, display):
         #Janela para abrir o Graphics,
@@ -18,9 +18,12 @@ class Draw:
         self.screen = Screen(self.display)
 
     # A função que deve ser usada para desenhar pontos é a função point    
-    def pixel_point(self,x, y, color):
+    def pixel_point(self, x, y, color):
         self.display.plot(x, y, color)
-        self.screen.pixels[x][y].color = color
+        try:
+            self.screen.pixels[x][y].color = color
+        except(IndexError):
+            pass
 
     # A função que deve ser usada para desenhar pontos é a função point
     def square_point(self,x, y, color):
@@ -39,7 +42,7 @@ class Draw:
         self.pixel_point(x, y - 1, color)
 
     # A função que deve ser usada para desenhar pontos é a função point
-    def maximum_point(self, x, y , color):
+    def maximum_point(self, x, y, color):
         self.pixel_point(x, y, color)
         self.pixel_point(x + 1, y, color)
 
@@ -70,7 +73,6 @@ class Draw:
             # Em casos que o usuário escolher um tamanho não disponível, o tamanho é alterado para o maximo,
             # na intenção de que o usuário perceba que algo está errado.
             point_dict[4](x, y, color)
-
 
     def line_low(self, initial_x, initial_y, final_x, final_y, color, size, type):
         delta_x = final_x - initial_x
@@ -170,6 +172,7 @@ class Draw:
                 incremental_error = incremental_error + 2 * delta_x
                 counter += 1
 
+    #Função que gera o as retas
     def line(self, initial_x, initial_y, final_x, final_y, color, size, type):
         if type not in [1, 2, 3]:
             print('Tipo de linha inválido')
@@ -187,6 +190,7 @@ class Draw:
             else:
                 self.line_high(initial_x, initial_y, final_x, final_y, color, size, type)
     
+    #Matriz para gerar o circulo
     def circle_points(self, xc, yc, x, y, color):
         self.point(xc + x, yc + y, color, 1)
         self.point(xc - x, yc + y, color, 1)
@@ -197,7 +201,7 @@ class Draw:
         self.point(xc + y, yc - x, color, 1)
         self.point(xc - y, yc - x, color, 1)
     
-    
+    #Função que gera o circulo
     def circle(self, xc, yc, r, color):
         x = 0
         y = r
@@ -216,8 +220,9 @@ class Draw:
 
             self.circle_points(xc, yc, x, y, color)
 
+    #Função que gera o texto
     def text(self, x, y, word, color, size, style):
-        t = Text(Point(x,y), word)
+        t = Text(Point(x, y), word)
         t.setOutline(color)
         t.setSize(size)
         t.setStyle(style)
@@ -228,9 +233,9 @@ class Draw:
 
         for _x in range(x - delta_x, x + delta_x + 1):
             for _y in range(y - delta_y, y + delta_y + 1):
-                self.screen.pixels[_x][_y].color = color
+                self.screen.pixels[_x][_y].color = 'text'
 
-
+    #Função de preencher os polignos
     def fill(self, x, y, color):
         '''
 
@@ -256,10 +261,10 @@ class Draw:
 
                 area.push(self.screen.pixels[pixel.x][pixel.y - 1])
 
-
+    #Função para projetar o Avião
     def project_airplane(self, x, y, z,f, F, x1, y1):
         x1 = int(x * f/(F-z))
         y1 = int(y * f/(F-z))
 
-        self.point(x1,y1, "green",1)
+        self.point(x1,y1, "green", 1)
  
